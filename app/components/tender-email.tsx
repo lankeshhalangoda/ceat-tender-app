@@ -81,7 +81,7 @@ export default function TenderEmail({ tenderData }: TenderEmailProps) {
 
           <p>
             If you have any questions or require clarification, please contact our procurement team at
-            procurement@ceat.com or call +91-22-12345678.
+            procurement@ceat.com or call +94-81-234-5678.
           </p>
 
           <p>We look forward to your participation.</p>

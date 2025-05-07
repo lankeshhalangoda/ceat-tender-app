@@ -220,7 +220,7 @@ export default function TenderPDFViewer({ tenderData, onDownload }: TenderPDFVie
                     <p>Procurement Department</p>
                     <p>{tenderData.company}</p>
                     <p>Email: procurement@ceat.com</p>
-                    <p>Phone: +91-22-12345678</p>
+                    <p>Phone: +94-81-234-5678</p>
                   </div>
                 </section>
               </div>

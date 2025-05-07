@@ -39,7 +39,7 @@ To apply, visit our survey link: ${tenderData.surveyLink}
 
 For queries:
 📧 procurement@ceat.com
-📞 +91-22-12345678
+📞 +94-81-234-5678
 
 ${tenderData.terms}`
 

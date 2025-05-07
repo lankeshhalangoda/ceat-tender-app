@@ -90,7 +90,7 @@ export default function TenderPoster({ type, tenderData }: TenderPosterProps) {
         </div>
 
         <div className="text-center text-gray-700 text-sm">
-          <p>For queries, contact: procurement@ceat.com | +91-22-12345678</p>
+          <p>For queries, contact: procurement@ceat.com | +94-81-234-5678</p>
           <p className="mt-1">Survey Link: {tenderData.surveyLink}</p>
         </div>
 
