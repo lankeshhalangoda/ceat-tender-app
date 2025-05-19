@@ -65,7 +65,7 @@ export default function TenderPoster({ type, tenderData }: TenderPosterProps) {
                   year: "numeric",
                 })}
               </p>
-              <p className="text-sm text-blue-700 mt-1">Technical Bid Opening: May 30, 2023</p>
+              <p className="text-sm text-blue-700 mt-1">Technical Bid Opening: May 30, 2025</p>
             </div>
           </div>
 

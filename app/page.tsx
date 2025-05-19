@@ -65,8 +65,8 @@ export default function Home() {
   // State for tender details
   const [tenderDetails, setTenderDetails] = useState({
     title: "Supply of Office Chairs",
-    id: "CEAT/2023/OFC-001",
-    deadline: "2023-05-25",
+    id: "CEAT/2025/OFC-001",
+    deadline: "2025-05-25",
     quantity: "200",
     company: "CEAT Ltd.",
     description:
@@ -159,7 +159,7 @@ export default function Home() {
       // Simulate getting new content by changing some values
       setTenderDetails((prev) => ({
         ...prev,
-        id: `CEAT/2023/OFC-${Math.floor(Math.random() * 999)
+        id: `CEAT/2025/OFC-${Math.floor(Math.random() * 999)
           .toString()
           .padStart(3, "0")}`,
       }))
