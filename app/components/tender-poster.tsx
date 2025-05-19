@@ -141,7 +141,7 @@ export default function TenderPoster({ type, tenderData }: TenderPosterProps) {
         <div className="flex items-center justify-between border-t pt-5">
           <div className="flex items-center text-gray-700">
             <Phone className="h-5 w-5 mr-2 text-blue-600" />
-            <span>procurement@ceat.com | +91-22-12345678</span>
+            <span>procurement@ceat.com | +94-81-234-5678</span>
           </div>
         </div>
       </div>

@@ -173,7 +173,7 @@ export default function TenderPDFViewer({ tenderData }: TenderPDFViewerProps) {
                     <br />
                     Email: procurement@ceat.com
                     <br />
-                    Phone: +91-22-12345678
+                    Phone: +94-81-234-5678
                   </p>
                 </section>
 

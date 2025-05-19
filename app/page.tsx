@@ -88,7 +88,7 @@ export default function Home() {
     ...tenderDetails,
     evaluationCriteria,
     terms: termsAndConditions,
-    surveyLink: "https://ceat.com/survey/office-chairs",
+    surveyLink: "https://emojot.com/ceat",
   }
 
   const showNotification = (message: string, type: "success" | "error" | "info" = "success") => {

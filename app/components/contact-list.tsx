@@ -10,14 +10,11 @@ import { Search, UserPlus } from "lucide-react"
 
 // Mock contact data
 const mockContacts = [
-  { id: "1", name: "Rajesh Kumar", email: "rajesh.kumar@example.com", department: "Procurement" },
-  { id: "2", name: "Priya Sharma", email: "priya.sharma@example.com", department: "Finance" },
-  { id: "3", name: "Amit Patel", email: "amit.patel@example.com", department: "Operations" },
-  { id: "4", name: "Neha Singh", email: "neha.singh@example.com", department: "Procurement" },
-  { id: "5", name: "Vikram Mehta", email: "vikram.mehta@example.com", department: "Management" },
-  { id: "6", name: "Sunita Verma", email: "sunita.verma@example.com", department: "Finance" },
-  { id: "7", name: "Deepak Gupta", email: "deepak.gupta@example.com", department: "Operations" },
-  { id: "8", name: "Ananya Reddy", email: "ananya.reddy@example.com", department: "Management" },
+  { id: "1", name: "Lanka Rubber Global Pvt Ltd", email: "admin@lankarubberglobal.com", department: "Procurement" },
+  { id: "2", name: "Trelleborg Lanka Pvt Ltd", email: "head@trelleborg.com", department: "Finance" },
+  { id: "3", name: "Certis Lanka Security Solutions", email: "contact@certislanka.com", department: "Operations" },
+  { id: "4", name: "Hayleys Advantis Ltd", email: "hi@advantis.com", department: "Procurement" },
+  { id: "5", name: "Demico Tyre House", email: "admin@demico.com", department: "Management" }
 ]
 
 interface ContactListProps {

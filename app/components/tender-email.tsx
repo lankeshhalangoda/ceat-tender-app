@@ -115,7 +115,7 @@ export default function TenderEmail({ tenderData }: TenderEmailProps) {
               <p>Best Regards,</p>
               <p className="font-medium">Procurement Team</p>
               <p>{tenderData.company}</p>
-              <p className="text-sm text-gray-500">procurement@ceat.com | +91-22-12345678</p>
+              <p className="text-sm text-gray-500">procurement@ceat.com | +94-81-234-5678</p>
             </div>
 
             <div className="bg-gray-50 border-t p-3 text-xs text-gray-500">
