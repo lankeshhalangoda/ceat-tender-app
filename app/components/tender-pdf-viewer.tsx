@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Download, Eye, FileText, Copy, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useRef } from "react"
 import QRCode from "./qr-code"
-import html2pdf from "html2pdf.js"
 
 
 interface TenderData {
@@ -32,22 +31,28 @@ export default function TenderPDFViewer({ tenderData }: TenderPDFViewerProps) {
   const nextPage = () => setCurrentPage((p) => Math.min(p + 1, totalPages))
   const prevPage = () => setCurrentPage((p) => Math.max(p - 1, 1))
 
-  const openPDFInNewTab = async () => {
-    if (!pdfRef.current) return
 
+  const openPDFInNewTab = async () => {
+    if (typeof window === "undefined") return // 🛡 SSR-safe check
+  
+    const html2pdf = (await import("html2pdf.js")).default // ✅ dynamic import
+  
+    if (!pdfRef.current) return
+  
     const opt = {
       margin: 0.5,
-      filename: `${tenderData.company}_Tender_${tenderData.title.replace(/\s+/g, "_")}.pdf`,
+      filename: `${tenderData.company}_Tender_${tenderData.title.replace(/\\s+/g, "_")}.pdf`,
       html2canvas: { scale: 2 },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
     }
-
+  
     const element = pdfRef.current
     const worker = html2pdf().set(opt).from(element)
     const blob = await worker.outputPdf("blob")
     const url = URL.createObjectURL(blob)
     window.open(url, "_blank")
   }
+  
 
   return (
     <div className="space-y-4">
