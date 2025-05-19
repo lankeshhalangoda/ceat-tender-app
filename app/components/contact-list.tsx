@@ -10,14 +10,14 @@ import { Search, UserPlus } from "lucide-react"
 
 // Mock contact data
 const mockContacts = [
-  { id: "1", name: "Saranga Gamage", email: "sarangag@emojot.com", department: "Procurement" },
-  { id: "2", name: "Manura Liyanawatte", email: "manura@emojot.com", department: "Finance" },
-  { id: "3", name: "shaveen Fernando", email: "shaveenf@emojot.com", department: "Operations" },
-  { id: "4", name: "Salman Faraj", email: "salmanf@emojot.com", department: "Procurement" },
-  { id: "5", name: "Kaveesha Hettige", email: "kaveeshah@emojot.com", department: "Management" },
-  { id: "6", name: "Nipul Yansith", email: "nipuly@emojot.com", department: "Finance" },
-  { id: "7", name: "Viraj Amarasena", email: "viraj@emojot.com", department: "Operations" },
-  { id: "8", name: "Sampath De Silva", email: "sampath@emojot.com", department: "Management" },
+  { id: "1", name: "Rajesh Kumar", email: "rajesh.kumar@example.com", department: "Procurement" },
+  { id: "2", name: "Priya Sharma", email: "priya.sharma@example.com", department: "Finance" },
+  { id: "3", name: "Amit Patel", email: "amit.patel@example.com", department: "Operations" },
+  { id: "4", name: "Neha Singh", email: "neha.singh@example.com", department: "Procurement" },
+  { id: "5", name: "Vikram Mehta", email: "vikram.mehta@example.com", department: "Management" },
+  { id: "6", name: "Sunita Verma", email: "sunita.verma@example.com", department: "Finance" },
+  { id: "7", name: "Deepak Gupta", email: "deepak.gupta@example.com", department: "Operations" },
+  { id: "8", name: "Ananya Reddy", email: "ananya.reddy@example.com", department: "Management" },
 ]
 
 interface ContactListProps {

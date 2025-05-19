@@ -1,10 +1,12 @@
+
 "use client"
 
-import { useState } from "react"
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Printer, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Download, Eye, FileText, Copy, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useRef } from "react"
 import QRCode from "./qr-code"
+import html2pdf from "html2pdf.js"
+
 
 interface TenderData {
   title: string
@@ -15,90 +17,65 @@ interface TenderData {
   description: string
   surveyLink: string
   terms: string
+  evaluationCriteria: string
 }
 
 interface TenderPDFViewerProps {
   tenderData: TenderData
-  onDownload: () => void
 }
 
-export default function TenderPDFViewer({ tenderData, onDownload }: TenderPDFViewerProps) {
+export default function TenderPDFViewer({ tenderData }: TenderPDFViewerProps) {
   const [currentPage, setCurrentPage] = useState(1)
-  const [zoom, setZoom] = useState(100)
-  const totalPages = 3
+  const totalPages = 2
+  const pdfRef = useRef<HTMLDivElement>(null)
 
-  const handleZoomIn = () => {
-    if (zoom < 200) setZoom(zoom + 10)
-  }
+  const nextPage = () => setCurrentPage((p) => Math.min(p + 1, totalPages))
+  const prevPage = () => setCurrentPage((p) => Math.max(p - 1, 1))
 
-  const handleZoomOut = () => {
-    if (zoom > 50) setZoom(zoom - 10)
-  }
+  const openPDFInNewTab = async () => {
+    if (!pdfRef.current) return
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1)
-  }
+    const opt = {
+      margin: 0.5,
+      filename: `${tenderData.company}_Tender_${tenderData.title.replace(/\s+/g, "_")}.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
+    }
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1)
+    const element = pdfRef.current
+    const worker = html2pdf().set(opt).from(element)
+    const blob = await worker.outputPdf("blob")
+    const url = URL.createObjectURL(blob)
+    window.open(url, "_blank")
   }
 
   return (
-    <div className="border rounded-lg overflow-hidden bg-gray-100">
-      {/* PDF Viewer Toolbar */}
-      <div className="bg-gray-200 p-2 border-b flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" onClick={handlePrevPage} disabled={currentPage === 1}>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <div className="text-sm">
-            Page <span className="font-medium">{currentPage}</span> of <span className="font-medium">{totalPages}</span>
-          </div>
-          <Button variant="ghost" size="icon" onClick={handleNextPage} disabled={currentPage === totalPages}>
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" onClick={handleZoomOut} disabled={zoom <= 50}>
-            <ZoomOut className="h-4 w-4" />
-          </Button>
-          <span className="text-sm font-medium">{zoom}%</span>
-          <Button variant="ghost" size="icon" onClick={handleZoomIn} disabled={zoom >= 200}>
-            <ZoomIn className="h-4 w-4" />
-          </Button>
-          <div className="h-5 border-l mx-1"></div>
-          <Button variant="ghost" size="icon" onClick={() => window.print()}>
-            <Printer className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={onDownload} className="download-button">
-            <Download className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="relative w-48">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-          <Input placeholder="Search document" className="pl-8 h-9 text-sm" />
-        </div>
-      </div>
-
-      {/* PDF Content */}
-      <div className="p-6 bg-gray-800 flex justify-center min-h-[700px]" id="pdf-content">
-        <div
-          className="bg-white shadow-lg rounded-sm overflow-hidden transition-all duration-200"
-          style={{
-            width: `${8.27 * (zoom / 100)}in`,
-            height: `${11.7 * (zoom / 100)}in`,
-            transform: `scale(${zoom / 100})`,
-            transformOrigin: "top center",
+    <div className="space-y-4">
+      <div className="flex justify-end gap-2 action-buttons">
+        <Button variant="outline" size="sm" onClick={openPDFInNewTab}>
+          <Download className="h-4 w-4 mr-2" />
+          Open PDF
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            navigator.clipboard.writeText(`${tenderData.company} Tender - ${tenderData.id}`)
           }}
         >
-          {currentPage === 1 ? (
-            <div className="relative p-8">
-              {/* PDF Header */}
+          <Copy className="h-4 w-4 mr-2" />
+          Copy Link
+        </Button>
+      </div>
+
+      <div ref={pdfRef} id="pdf-content" className="border rounded-lg overflow-hidden">
+
+        <div className="p-6 bg-white">
+          {currentPage === 1 && (
+            <div className="border rounded-lg shadow-sm overflow-hidden">
               <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
                 <div className="flex items-center">
-                  <img src="/images/ceat-logo.png" alt="CEAT Logo" className="h-10 mr-4" />
+                  <img src="/images/ceat-logo.png" alt="CEAT Logo" className="h-12 mr-4" />
                   <div>
                     <h2 className="text-xl font-bold">TENDER DOCUMENT</h2>
                     <p className="text-sm text-gray-500">Ref: {tenderData.id}</p>
@@ -107,7 +84,6 @@ export default function TenderPDFViewer({ tenderData, onDownload }: TenderPDFVie
                 <QRCode size={80} surveyLink={tenderData.surveyLink} />
               </div>
 
-              {/* PDF Content */}
               <div className="p-6 space-y-4">
                 <h1 className="text-2xl font-bold text-center">INVITATION TO TENDER</h1>
                 <h2 className="text-xl font-semibold text-center mb-4">{tenderData.title}</h2>
@@ -149,27 +125,22 @@ export default function TenderPDFViewer({ tenderData, onDownload }: TenderPDFVie
                     </div>
                   </section>
 
-                  <section>
-                    <h3 className="text-lg font-semibold border-b pb-2 mb-2">4. Survey Link</h3>
-                    <p className="text-gray-700">
-                      For more information and to submit your response, please visit:{" "}
-                      <span className="text-blue-600">{tenderData.surveyLink}</span>
-                    </p>
-                  </section>
+                  <div className="flex justify-between mt-8 items-center">
+                    <div></div>
+                    <div className="text-sm text-gray-600">
+                      <p>Page 1 of {totalPages}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              {/* PDF Footer */}
-              <div className="absolute bottom-4 left-0 right-0 flex justify-center text-sm">
-                <span className="text-gray-500">1</span>
-              </div>
             </div>
-          ) : currentPage === 2 ? (
-            <div className="relative p-8">
-              {/* Page 2 Header */}
+          )}
+
+          {currentPage === 2 && (
+            <div className="border rounded-lg shadow-sm overflow-hidden">
               <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
                 <div className="flex items-center">
-                  <img src="/images/ceat-logo.png" alt="CEAT Logo" className="h-10 mr-4" />
+                  <img src="/images/ceat-logo.png" alt="CEAT Logo" className="h-12 mr-4" />
                   <div>
                     <h2 className="text-xl font-bold">TENDER DOCUMENT</h2>
                     <p className="text-sm text-gray-500">Ref: {tenderData.id}</p>
@@ -177,109 +148,72 @@ export default function TenderPDFViewer({ tenderData, onDownload }: TenderPDFVie
                 </div>
               </div>
 
-              {/* Page 2 Content */}
               <div className="p-6 space-y-4">
                 <section>
-                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">5. Eligibility Criteria</h3>
-                  <p className="text-gray-700 mb-2">Bidders must meet the following eligibility criteria:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700">
-                    <li>Minimum 3 years of experience in supplying office furniture</li>
-                    <li>Annual turnover of at least INR 1 crore in the last financial year</li>
-                    <li>Valid GST registration and PAN</li>
-                    <li>No blacklisting by any government or private organization</li>
-                  </ul>
+                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">4. Evaluation Criteria</h3>
+                  <p className="text-gray-700">{tenderData.evaluationCriteria}</p>
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">6. Submission Guidelines</h3>
-                  <p className="text-gray-700 mb-2">Bids must be submitted in the following format:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700">
-                    <li>Technical bid and financial bid in separate sealed envelopes</li>
-                    <li>Company profile and relevant experience</li>
-                    <li>Product specifications and brochures</li>
-                    <li>Warranty and after-sales service details</li>
-                    <li>Delivery timeline</li>
-                  </ul>
+                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">5. Terms and Conditions</h3>
+                  <p className="text-gray-700">{tenderData.terms}</p>
                 </section>
 
                 <section>
-                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">7. Evaluation Criteria</h3>
-                  <p className="text-gray-700 mb-2">Bids will be evaluated based on:</p>
-                  <ul className="list-disc list-inside space-y-1 text-gray-700">
-                    <li>Technical compliance (40%)</li>
-                    <li>Price (30%)</li>
-                    <li>Delivery timeline (15%)</li>
-                    <li>Warranty and after-sales service (15%)</li>
-                  </ul>
-                </section>
-
-                <section>
-                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">8. Contact Information</h3>
-                  <p className="text-gray-700">For any queries related to this tender, please contact:</p>
-                  <div className="mt-2 space-y-1 text-gray-700">
-                    <p>Procurement Department</p>
-                    <p>{tenderData.company}</p>
-                    <p>Email: procurement@ceat.com</p>
-                    <p>Phone: +94-81-234-5678</p>
-                  </div>
-                </section>
-              </div>
-
-              {/* PDF Footer */}
-              <div className="absolute bottom-4 left-0 right-0 flex justify-center text-sm">
-                <span className="text-gray-500">2</span>
-              </div>
-            </div>
-          ) : (
-            <div className="relative p-8">
-              {/* Page 3 Header - Terms and Conditions */}
-              <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
-                <div className="flex items-center">
-                  <img src="/images/ceat-logo.png" alt="CEAT Logo" className="h-10 mr-4" />
-                  <div>
-                    <h2 className="text-xl font-bold">TENDER DOCUMENT</h2>
-                    <p className="text-sm text-gray-500">Ref: {tenderData.id}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Page 3 Content - Terms and Conditions */}
-              <div className="p-6 space-y-4">
-                <h3 className="text-lg font-semibold border-b pb-2 mb-2">9. Terms and Conditions</h3>
-
-                <div className="bg-gray-50 p-4 rounded-md">
-                  <p className="text-gray-700 whitespace-pre-line">{tenderData.terms}</p>
-                </div>
-
-                <div className="mt-8">
-                  <h4 className="font-medium mb-2">Declaration</h4>
+                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">6. Contact Information</h3>
                   <p className="text-gray-700">
-                    By submitting a bid in response to this tender, the bidder acknowledges that they have read,
-                    understood, and agree to abide by all the terms and conditions specified in this document.
+                    For any queries regarding this tender, please contact:
+                    <br />
+                    Procurement Department
+                    <br />
+                    Email: procurement@ceat.com
+                    <br />
+                    Phone: +91-22-12345678
                   </p>
-                </div>
+                </section>
 
-                <div className="mt-8 pt-4 border-t">
-                  <div className="flex justify-between">
-                    <div>
-                      <p className="font-medium">For {tenderData.company}</p>
-                      <p className="text-gray-500 mt-8">Authorized Signatory</p>
-                    </div>
-                    <div>
-                      <p className="font-medium">For Supplier</p>
-                      <p className="text-gray-500 mt-8">Authorized Signatory</p>
-                    </div>
+                <section>
+                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">7. Survey Link</h3>
+                  <p className="text-gray-700">
+                    Please complete the survey using the following link:{" "}
+                    <a href={tenderData.surveyLink} className="text-blue-500 underline">
+                      {tenderData.surveyLink}
+                    </a>
+                  </p>
+                  <div className="flex justify-center mt-4">
+                    <QRCode size={100} surveyLink={tenderData.surveyLink} />
+                  </div>
+                </section>
+
+                <div className="flex justify-between mt-8 items-center">
+                  <div></div>
+                  <div className="text-sm text-gray-600">
+                    <p>Page 2 of {totalPages}</p>
                   </div>
                 </div>
               </div>
 
-              {/* PDF Footer */}
-              <div className="absolute bottom-4 left-0 right-0 flex justify-center text-sm">
-                <span className="text-gray-500">3</span>
+              <div className="bg-gray-50 p-3 border-t flex justify-center items-center">
+                <div className="text-xs text-gray-500 flex items-center">
+                  <span className="mr-2">Powered by</span>
+                  <img src="/images/emojot-logo.png" alt="Emojot Logo" className="h-4" />
+                </div>
               </div>
             </div>
           )}
         </div>
+      </div>
+
+      <div className="flex justify-center mt-4 space-x-2">
+        <Button variant="outline" size="sm" onClick={prevPage} disabled={currentPage === 1}>
+          <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+        </Button>
+        <div className="flex items-center px-3 border rounded-md">
+          Page {currentPage} of {totalPages}
+        </div>
+        <Button variant="outline" size="sm" onClick={nextPage} disabled={currentPage === totalPages}>
+          Next <ChevronRight className="h-4 w-4 ml-1" />
+        </Button>
       </div>
     </div>
   )

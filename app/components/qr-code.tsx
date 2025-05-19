@@ -1,18 +1,24 @@
+interface QRCodeProps {
+  size?: number
+  className?: string
+  surveyLink?: string
+}
 
-'use client'
-import { useEffect, useState } from "react"
-import QRCode from "qrcode"
-
-export default function QR({ surveyLink, size = 100 }: { surveyLink: string, size?: number }) {
-  const [qrUrl, setQrUrl] = useState("")
-
-  useEffect(() => {
-    QRCode.toDataURL(surveyLink, { width: size, margin: 1 }, (err, url) => {
-      if (!err) setQrUrl(url)
-    })
-  }, [surveyLink, size])
-
-  return qrUrl ? (
-    <img src={qrUrl} alt="QR Code" style={{ width: size, height: size }} />
-  ) : null
+export default function QRCode({ size = 120, className = "", surveyLink = "https://ceat.com/survey" }: QRCodeProps) {
+  return (
+    <div className={`bg-white p-2 inline-block rounded-md ${className}`}>
+      <div className="flex flex-col items-center justify-center">
+        {/* Use the provided QR code image */}
+        <img
+          src="/images/qr-code.png"
+          width={size}
+          height={size}
+          alt="QR Code"
+          className="qr-code-image"
+          style={{ display: "block" }}
+        />
+        <div className="text-xs text-center mt-1 font-medium text-gray-800">Scan to respond</div>
+      </div>
+    </div>
+  )
 }

@@ -1,4 +1,5 @@
 import QRCode from "./qr-code"
+import { Calendar, Package2, Clock, FileCheck, Phone } from "lucide-react"
 
 interface TenderData {
   title: string
@@ -9,6 +10,7 @@ interface TenderData {
   description: string
   surveyLink: string
   terms: string
+  evaluationCriteria: string
 }
 
 interface TenderPosterProps {
@@ -19,82 +21,134 @@ interface TenderPosterProps {
 export default function TenderPoster({ type, tenderData }: TenderPosterProps) {
   return (
     <div
-      className={`border rounded-lg overflow-hidden ${type === "print" ? "bg-white" : "bg-gradient-to-br from-blue-50 to-indigo-50"}`}
+      className={`border rounded-lg overflow-hidden shadow-lg ${
+        type === "print" ? "bg-white" : "bg-gradient-to-b from-blue-50 via-white to-blue-50"
+      }`}
     >
-      <div className="p-8 relative">
-        {/* Header with logo and QR code side by side */}
-        <div className="flex justify-between items-start mb-8">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-blue-700 to-blue-900 text-white p-5">
+        <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <img src="/images/ceat-logo.png" alt="CEAT Logo" className="h-12 mr-4" />
-            <div className="border-l-2 border-red-500 pl-4">
-              <h3 className="text-xl font-bold">TENDER NOTICE</h3>
-              <p className="text-sm text-gray-500">Ref: {tenderData.id}</p>
+            <img src="/images/ceat-logo.png" alt="CEAT Logo" className="h-14 mr-5 bg-white p-1 rounded" />
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">TENDER NOTICE</h1>
+              <p className="text-blue-100 text-lg">Reference: {tenderData.id}</p>
+            </div>
+          </div>
+          <div className="hidden md:block">
+            <QRCode size={110} surveyLink={tenderData.surveyLink} className="shadow-lg" />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="p-6">
+        {/* Title and Description */}
+        <div className="mb-6 border-b pb-5">
+          <h2 className="text-2xl md:text-3xl font-bold text-blue-800 mb-3">{tenderData.title}</h2>
+          <p className="text-gray-700 text-lg">{tenderData.description}</p>
+        </div>
+
+        {/* Key Information Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          {/* Deadline Card */}
+          <div className="bg-blue-50 rounded-lg p-5 border border-blue-100 flex items-start shadow-sm">
+            <div className="bg-blue-700 text-white p-3 rounded-full mr-4">
+              <Calendar className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-blue-800 text-lg">Submission Deadline</h3>
+              <p className="text-blue-900 font-medium text-xl">
+                {new Date(tenderData.deadline).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+              <p className="text-sm text-blue-700 mt-1">Technical Bid Opening: May 30, 2023</p>
             </div>
           </div>
 
-          {/* QR code positioned to not overlap content */}
-          <div className="bg-white p-2 rounded-lg shadow-sm ml-4">
-            <QRCode surveyLink={tenderData.surveyLink} />
-          </div>
-        </div>
-
-        {/* Content area with no right padding needed now */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">{tenderData.title}</h1>
-          <p className="text-gray-700 mb-4">{tenderData.description}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <h3 className="font-semibold mb-2">Requirements:</h3>
-            <ul className="list-disc list-inside space-y-1 text-gray-700">
-              <li>Ergonomic design with lumbar support</li>
-              <li>Adjustable height and armrests</li>
-              <li>High-quality breathable mesh material</li>
-              <li>Minimum 2-year warranty</li>
-              <li>Quantity: {tenderData.quantity} units</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-2">Important Dates:</h3>
-            <div className="space-y-2 text-gray-700">
-              <div className="flex justify-between">
-                <span>Tender Release Date:</span>
-                <span className="font-medium">May 10, 2023</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Last Date for Submission:</span>
-                <span className="font-medium">
-                  {new Date(tenderData.deadline).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Technical Bid Opening:</span>
-                <span className="font-medium">May 30, 2023</span>
-              </div>
+          {/* Quantity Card */}
+          <div className="bg-green-50 rounded-lg p-5 border border-green-100 flex items-start shadow-sm">
+            <div className="bg-green-700 text-white p-3 rounded-full mr-4">
+              <Package2 className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-green-800 text-lg">Required Quantity</h3>
+              <p className="text-green-900 font-medium text-xl">{tenderData.quantity} units</p>
+              <p className="text-sm text-green-700 mt-1">Delivery to {tenderData.company} Headquarters</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-lg mb-6">
-          <h3 className="font-semibold mb-2">How to Apply:</h3>
-          <p className="text-gray-700">
+        {/* Requirements Section */}
+        <div className="mb-6 bg-gray-50 rounded-lg p-5 border border-gray-200 shadow-sm">
+          <h3 className="font-bold text-gray-800 mb-3 flex items-center text-lg">
+            <FileCheck className="h-6 w-6 mr-2 text-gray-700" />
+            Technical Requirements
+          </h3>
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+            <li className="flex items-center text-gray-700">
+              <div className="h-2 w-2 rounded-full bg-blue-600 mr-2"></div>
+              Ergonomic design with lumbar support
+            </li>
+            <li className="flex items-center text-gray-700">
+              <div className="h-2 w-2 rounded-full bg-blue-600 mr-2"></div>
+              Adjustable height mechanism (gas lift)
+            </li>
+            <li className="flex items-center text-gray-700">
+              <div className="h-2 w-2 rounded-full bg-blue-600 mr-2"></div>
+              Adjustable armrests (height and width)
+            </li>
+            <li className="flex items-center text-gray-700">
+              <div className="h-2 w-2 rounded-full bg-blue-600 mr-2"></div>
+              High-quality breathable mesh backrest
+            </li>
+            <li className="flex items-center text-gray-700">
+              <div className="h-2 w-2 rounded-full bg-blue-600 mr-2"></div>
+              360° swivel with smooth-rolling casters
+            </li>
+            <li className="flex items-center text-gray-700">
+              <div className="h-2 w-2 rounded-full bg-blue-600 mr-2"></div>
+              Minimum 2-year warranty and support
+            </li>
+          </ul>
+        </div>
+
+        {/* Evaluation Criteria */}
+        <div className="mb-6 bg-amber-50 rounded-lg p-5 border border-amber-100 shadow-sm">
+          <h3 className="font-bold text-amber-800 mb-3 text-lg">Evaluation Criteria</h3>
+          <p className="text-amber-900">{tenderData.evaluationCriteria}</p>
+        </div>
+
+        {/* How to Apply */}
+        <div className="mb-6 bg-blue-50 rounded-lg p-5 border border-blue-100 shadow-sm">
+          <h3 className="font-bold text-blue-800 mb-3 flex items-center text-lg">
+            <Clock className="h-6 w-6 mr-2 text-blue-700" />
+            How to Apply
+          </h3>
+          <p className="text-blue-900">
             Interested suppliers can submit their bids in sealed envelopes marked "Tender for {tenderData.title}" to the
             Procurement Department, {tenderData.company} Headquarters, or apply online by scanning the QR code.
           </p>
+          <div className="md:hidden mt-5 flex justify-center">
+            <QRCode size={130} surveyLink={tenderData.surveyLink} className="shadow-md" />
+          </div>
         </div>
 
-        <div className="text-center text-gray-700 text-sm">
-          <p>For queries, contact: procurement@ceat.com | +94-81-234-5678</p>
-          <p className="mt-1">Survey Link: {tenderData.surveyLink}</p>
+        {/* Contact Information */}
+        <div className="flex items-center justify-between border-t pt-5">
+          <div className="flex items-center text-gray-700">
+            <Phone className="h-5 w-5 mr-2 text-blue-600" />
+            <span>procurement@ceat.com | +91-22-12345678</span>
+          </div>
         </div>
+      </div>
 
-        <div className="mt-4 pt-4 border-t text-xs text-gray-500">
+      {/* Footer */}
+      <div className="bg-gray-50 p-4 border-t">
+        <div className="text-xs text-gray-500 text-center mb-2">
           <p>{tenderData.terms}</p>
         </div>
       </div>

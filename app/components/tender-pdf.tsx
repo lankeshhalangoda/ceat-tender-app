@@ -1,6 +1,5 @@
 import QRCode from "./qr-code"
-import { FileText, Download } from "lucide-react"
-
+import { FileText } from "lucide-react"
 interface TenderData {
   title: string
   id: string
@@ -87,40 +86,19 @@ export default function TenderPDF({ tenderData }: TenderPDFProps) {
 
               <section>
                 <h3 className="text-lg font-semibold border-b pb-2 mb-2">4. Survey Link</h3>
-                <p className="text-gray-700">
-                  For more information and to submit your response, please visit:{" "}
-                  <span className="text-blue-600">{tenderData.surveyLink}</span>
+                <p>
+                  Please complete the survey using the following link: <a href={tenderData.surveyLink} className="text-blue-500 underline">{tenderData.surveyLink}</a>
                 </p>
-              </section>
+              </section>sApp messages, and posters.
 
-              {/* Faded content to indicate more pages */}
-              <div className="relative mt-6 pt-6">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white"></div>
-                <section className="opacity-30">
-                  <h3 className="text-lg font-semibold border-b pb-2 mb-2">5. Eligibility Criteria</h3>
-                  <p className="text-gray-700">Bidders must meet the following eligibility criteria:</p>
-                </section>
-              </div>
-            </div>
-          </div>
+The main functionality includes:
+1. A form to input tender details
+2. Generation of various tender document formats
+3. Contact management for distribution
+4. QR code generation for survey links
+5. Notification system
 
-          {/* PDF Footer */}
-          <div className="bg-gray-50 p-3 border-t flex justify-between text-sm">
-            <span className="text-gray-500">Page 1 of 2</span>
-            <span className="text-xs text-gray-500">{tenderData.terms}</span>
-          </div>
-        </div>
+The project uses shadcn/ui components for the interface and follows modern Next.js practices with the App Router.
 
-        <div className="mt-4 text-center action-buttons">
-          <p className="text-sm text-gray-500 mb-2">
-            This PDF includes the complete tender specifications, terms & conditions, and submission guidelines.
-          </p>
-          <div className="inline-flex items-center text-blue-600 cursor-pointer">
-            <Download className="h-4 w-4 mr-1" />
-            <span>Download Full PDF</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+Would you like me to focus on any specific part of the application or make any particular modifications to the code?
+\
